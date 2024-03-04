@@ -4,9 +4,6 @@ import { Plus } from "lucide-react"
 import ActionToolTip from "@/components/action-tooltip"
 import { useModal } from "@/hooks/use-modal-store";
 
-
-
-
 export default function NavigationAction() {
 
     const { onOpen } = useModal();
