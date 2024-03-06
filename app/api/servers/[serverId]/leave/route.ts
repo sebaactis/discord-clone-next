@@ -7,8 +7,6 @@ export async function PATCH(req: Request,
     try {
         const profile = await currentProfile();
 
-        console.log(profile);
-
         if (!profile) return new NextResponse("Unauthorized", { status: 401 });
         if (!params.serverId) return new NextResponse("Server ID missing", { status: 400 });
 
