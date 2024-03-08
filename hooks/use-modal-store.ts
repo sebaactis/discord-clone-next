@@ -8,7 +8,7 @@ interface ModalData {
     channel?: Channel;
     channelType?: ChannelType
 }
-
+        
 interface ModalStore {
     type: ModalType | null
     data: ModalData
