@@ -49,6 +49,7 @@ export const ChatItem = ({ id, content, member, timestamp, fileUrl, deleted, cur
     const router = useRouter();
     const [isEditing, setIsEditing] = useState(false)
     const { onOpen } = useModal();
+    
     const onMemberClick = () => {
         if (member.id === currentMember.id) return;
 
@@ -99,7 +100,7 @@ export const ChatItem = ({ id, content, member, timestamp, fileUrl, deleted, cur
         form.reset({
             content: content
         })
-    }, [content])
+    }, [content, form])
 
     const fileType = fileUrl?.split(".").pop();
     const isAdmin = currentMember.role === MemberRole.ADMIN

@@ -29,6 +29,7 @@ export const useChatQuery = ({
         }, { skipNull: true })
 
         const res = await fetch(url)
+
         return res.json();
     }
 
@@ -46,6 +47,7 @@ export const useChatQuery = ({
         refetchInterval: isConnected ? false : 1000,
     });
 
+    console.log(data)
     return {
         data,
         fetchNextPage,

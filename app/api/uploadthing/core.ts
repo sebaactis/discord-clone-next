@@ -1,15 +1,19 @@
 
 import { auth } from "@clerk/nextjs"
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { UploadThingError } from "uploadthing/server";
+
+// Componente que realiza la carga del archivo
 
 const f = createUploadthing();
 
+// Manejamos que la carga la este realizando solo un usuario autorizado.
 const handleAuth = () => {
     const { userId } = auth();
     if (!userId) throw new Error("Unauthorized")
     return { userId: userId }
 }
+
+// Configuramos las dos opciones de carga
 
 export const ourFileRouter = {
     serverImage: f({ image: { maxFileSize: "4MB", maxFileCount: 1 } })

@@ -11,14 +11,18 @@ interface FileUploadProps {
     endpoint: "messageFile" | "serverImage"
 }
 
+// Componente creado con Upload Thing para manejar la carga de archivos pdf e imagenes en la nube. 
+
 export default function FileUpload({
     onChange,
     value,
     endpoint
 }: FileUploadProps) {
 
+    // Verificamos el tipo de archivo buscando su extension (pdf, jpg, etc)
     const fileType = value?.split(".").pop()
 
+    // Si tenemos un valor y no es pdf cargamos un componente de imagen
     if (value && fileType !== "pdf") {
         return (
             <div className="relative h-20 w-20">
@@ -35,6 +39,7 @@ export default function FileUpload({
         )
     }
 
+    // Si tenemos valor y es pdf cargamos lo siguiente
     if (value && fileType === "pdf") {
         return (
             <div className="relative flex items-center p-2 mt-2 rounded-md bg-background/10">
@@ -49,6 +54,7 @@ export default function FileUpload({
         )
     }
 
+    // De base, cargamos la zona de carga para un archivo, configurado segun lo que informa Upload Thing
     return (
         <UploadDropzone
             endpoint={endpoint}
