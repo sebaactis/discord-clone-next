@@ -1,4 +1,5 @@
 "use client"
+
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 
 import { Search } from "lucide-react"
@@ -17,13 +18,19 @@ interface ServerSearchProps {
     }[]
 }
 
+// Recibimos por props el label, el type y un objeto data con el icon, name y string
+
 export default function ServerSearch({
     data
 }: ServerSearchProps) {
 
+    // Creamos un estado para controlar si el cuadro de busqueda esta abierto o cerrado
+
     const [open, setOpen] = useState(false)
     const router = useRouter();
     const params = useParams();
+
+    // Creamos un efecto para poder cerrar el modal de busqueda, con la tecla de escape. Agregamos el evento keydown para escuchar el evento y lo removemos para no acumularlo. 
 
     useEffect(() => {
         const down = (e: KeyboardEvent) => {
@@ -37,14 +44,19 @@ export default function ServerSearch({
         return () => document.removeEventListener("keydown", down)
     }, [])
 
+    // Creamos un evento onClick que recibe dos parametros, el id y el tipo
+    // Cerramos el modal cuando damos click en la opcion que buscamos.
+    // Y dependiendo si es miembro y canal, redireccionamos hacia la url correspondiente del canal o miembro al que queremos ingresar
 
     const onClick = ({ id, type }: { id: string, type: "channel" | "member" }) => {
         setOpen(false);
 
-        if (type === "member") return router.push(`/servers/${params.serverId}/conversations/${id}`)
-        if (type === "channel") return router.push(`/servers/${params.serverId}/channels/${id}`)
+        if (type === "member") return router.push(`/servers/${params?.serverId}/conversations/${id}`)
+        if (type === "channel") return router.push(`/servers/${params?.serverId}/channels/${id}`)
 
     }
+
+
 
     return (
         <>
@@ -58,15 +70,20 @@ export default function ServerSearch({
                 </kbd>
             </button>
 
+            {/* Cuando open es true, abrimos el comando de dialogo */}
+            {/* Renderizamos el input para buscar, y el Empty para cuando no tenemos resultados */}
+
+
             <CommandDialog open={open} onOpenChange={setOpen}>
                 <CommandInput placeholder="Search all channels and members" />
                 <CommandList>
                     <CommandEmpty>
                         No result found
                     </CommandEmpty>
+                    {/* Primero renderizamos cada seccion que tenemos  */}
                     {data.map(({ label, type, data }) => {
                         if (!data?.length) return null
-
+                        {/* Y luego renderizamos cada item que corresponda a cada seccion */ }
                         return (
                             <CommandGroup key={label} heading={label}>
                                 {data?.map(({ id, icon, name }) => {

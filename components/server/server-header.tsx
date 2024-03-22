@@ -12,17 +12,27 @@ interface ServerHeaderProps {
     role?: MemberRole
 }
 
+// El server y el role viene de las props cuando renderizamos el componente. 
+
 export default function ServerHeader({
     server, role
 }: ServerHeaderProps) {
 
+    // Recuperamos la funcion del useModal para abrir el modal
+
     const { onOpen } = useModal();
+
+    // Creamos variables para saber el usuario actual es ADMIN o MODERATOR
 
     const isAdmin = role === MemberRole.ADMIN
     const isModerator = isAdmin || role === MemberRole.MODERATOR
 
+    // Creamos un DropDownMenu, para tener las diferentes gestiones del servidor en una lista desplegable.
+
     return (
         <DropdownMenu>
+
+            {/* El trigger es lo que se ve inicialmente, el inicial */}
 
             <DropdownMenuTrigger className="focus:outline-none" asChild>
                 <button className="w-full text-md font-semibold px-3 flex items-center h-12 border-neutral-200 dark:border-neutral-800 border-b-2 hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition">
@@ -30,6 +40,10 @@ export default function ServerHeader({
                     <ChevronDown className="h-5 w-5 ml-auto" />
                 </button>
             </DropdownMenuTrigger>
+
+            {/* El contenido es lo que se vera cuando abramos el desplegable */}
+            {/* Veremos opciones en base de si somos moderadores o admin, o si no somos nada. */}
+            {/* Usaremos en cada item, la funcion para abrir el modal, al que le pasamos el tipo de modal que vamos a abrir, y un objeto con la data importante para ese modal */}
 
             <DropdownMenuContent className="w-56 text-xs font-medium text-black dark:text-neutral-400 space-y-[2px]">
                 {isModerator && (

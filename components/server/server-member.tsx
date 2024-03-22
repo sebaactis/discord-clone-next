@@ -11,6 +11,10 @@ interface ServerMemberProps {
     server: Server
 }
 
+// Recibimos por prop el miembro y el servidor
+
+// Creamos un objeto para renderizar un icono segun el role del miembro
+
 const roleIconMap = {
     [MemberRole.GUEST]: null,
     [MemberRole.MODERATOR]: <ShieldCheck className="h-4 w-4 ml-2 text-indigo-500" />,
@@ -25,11 +29,17 @@ export default function ServerMember({
     const params = useParams();
     const router = useRouter();
 
+    // Creamos un objeto dinamico para tomar el icono segun la llave del objeto
+
     const icon = roleIconMap[member.role]
+
+    // Creamos una funcion onClick para ir hacia una conversacion privada con el miembro
 
     const onClick = () => {
         router.push(`/servers/${params?.serverId}/conversations/${member.id}`)
     }
+
+    // Renderizamos un button donde veamos el avatar del usuario, y el nombre del miembro. El boton es para ir a la conversacion privada
 
     return (
         <button onClick={onClick} className={cn(

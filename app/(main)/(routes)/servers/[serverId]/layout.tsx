@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { redirectToSignIn } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
+// Layout comun a todos las paginas de servidores
 
 export default async function ServerIdLayout({ children, params }: {
     children: React.ReactNode,
@@ -11,9 +12,12 @@ export default async function ServerIdLayout({ children, params }: {
 
 }) {
 
-    const profile = await currentProfile();
+    // Recuperamos el perfil actual de clerk
 
+    const profile = await currentProfile();
     if (!profile) return redirectToSignIn()
+
+    // Buscamos el servidor con el serverId de params.
 
     const server = await db.server.findUnique({
         where: {
@@ -26,7 +30,12 @@ export default async function ServerIdLayout({ children, params }: {
         }
     })
 
+
+    // Si no existe, volvemos a la ruta inicial (iremos al InitialModal)
+
     if (!server) return redirect("/")
+
+    // Renderizamos el Sidebar del servidor, que es comun a todos los servidores, y el children es el resto de servidor
 
     return (
         <div className="h-full">

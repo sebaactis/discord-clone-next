@@ -13,6 +13,11 @@ interface ServerChannelProps {
     server: Server
     role?: MemberRole
 }
+// Renderizamos cada canal que tengamos en el tipo de canal especificado
+
+// Recibimos por props el canal, el server y el role.
+
+// Creamos un objeto para renderizar un icono segun el tipo de canal que tengamos
 
 const iconMap = {
     [ChannelType.TEXT]: Hash,
@@ -26,20 +31,32 @@ export default function ServerChannel({
     role
 }: ServerChannelProps) {
 
+    // Usamos la funcion onOpen de useModal
+
     const { onOpen } = useModal();
     const params = useParams();
     const router = useRouter();
 
+    // Creamos un icono dinamico que tome el valor segun el valor del channel type iconMap[llave del objeto]
+
     const Icon = iconMap[channel.type]
+
+    // Creamos una funcion onLick para ir hacia el channel que recibimos por prop
 
     const onClick = () => {
         router.push(`/servers/${params?.serverId}/channels/${channel.id}`)
     }
 
+    // Creamos esta funcion para evitar la propagacion de los botones de editar y borrar (revisar esto)
+
     const onAction = (e: React.MouseEvent, action: ModalType) => {
         e.stopPropagation();
         onOpen(action, { channel, server })
     }
+
+    // Renderizamos el icono, el nombre del canal, y un tooltip para editar y otro para borrar el canal
+    // Y si el nombre del canal es general, un icono lock para indicar que no se puede editar ni borrar el canal general
+    // Solo podremos editar o borrar un canal si no es el general, y si somos MODERATOR o ADMIN
 
     return (
         <button onClick={onClick} className={cn(
