@@ -23,14 +23,9 @@ export default function ServerSection({
 }: ServerSectionProps) {
 
     // Recibimos por props label, role, sectionType, channelType y el server
-
     // Usamos la funcion onOpen del useModal
 
-
-
-    const { onOpen } = useModal();
-
-    //  
+    const { onOpen } = useModal();  
 
     return (
         <div className="flex items-center justify-between py-2">

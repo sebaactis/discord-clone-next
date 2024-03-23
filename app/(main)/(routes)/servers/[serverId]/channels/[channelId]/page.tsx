@@ -8,6 +8,8 @@ import { redirectToSignIn } from "@clerk/nextjs";
 import { ChannelType } from "@prisma/client";
 import { redirect } from "next/navigation";
 
+// Ruta para ir hacia un canal puntual
+
 interface ChannelIdPageProps {
     params: {
         serverId: string
@@ -15,19 +17,26 @@ interface ChannelIdPageProps {
     }
 }
 
+// Recibimos de los params (funcionalidad de next) el serverId y el channelId que vienen en la url
+
 export default async function ChannelIdPage({
     params
 }: ChannelIdPageProps) {
 
-    const profile = await currentProfile();
+    // Recuperamos el profile actual con clerk
 
+    const profile = await currentProfile();
     if (!profile) return redirectToSignIn();
+
+    // Usamos el params.channelId para buscar el canal en la base de datos
 
     const channel = await db.channel.findUnique({
         where: {
             id: params.channelId
         }
     })
+
+    // Buscamos el miembro actual que este logueado con el params.serverId y el profile.id
 
     const member = await db.member.findFirst({
         where: {
@@ -36,9 +45,13 @@ export default async function ChannelIdPage({
         }
     })
 
+    // Si no existe canal o miembro, redireccionamos hacia la ruta inicial
+
     if (!channel || !member) redirect("/")
 
-    console.log(channel.id)
+    // Vamos a renderizar el ChatHeader del channel, y sus mensajes correspondientes con el ChatMessages. Ademas de un ChatInput para poder agregar nuevamos mensajes a dicho canal
+
+    // Ademas, si verificamos que el tipo de canal es audio o video, vamos a renderizar una MediaRoom. 
 
     return (
         <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
