@@ -16,6 +16,10 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useEffect } from "react"
 
+// Modal para crear un canal
+
+// Creamos el schema para la creacion del canal, y validar la informacion. El refine nos va a permitir verificar que el nombre del canal no sea general.
+
 const formSchema = z.object({
     name: z.string().min(1, {
         message: "Channel name is required"
@@ -28,12 +32,22 @@ const formSchema = z.object({
 
 export default function CreateChannelModal() {
 
+    // Consumimos el hook useModal. Utilizaremos las funciones isOpen y onClose, y el estado de type (tipo de modal) y data (objeto con la data).
+
     const { isOpen, onClose, type, data } = useModal()
     const router = useRouter()
     const params = useParams()
 
+    // isModalOpen va a ser true cuando el isOpen === true y el type sea "createChannel"
+
     const isModalOpen = isOpen && type === "createChannel"
+
+    // Recuperamos el channelType del objeto data actual.
+
     const { channelType } = data;
+
+    // Creamos un formulario con el useForm de react-hook-form. El resolver es el que validara el formulario con el formSchema de zod.
+    // Resaltamos que como valor por defecto, vamos a usar el channelType que recuperamos de data, o en su defecto, pondremos ChannelType.TEXT
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -43,6 +57,8 @@ export default function CreateChannelModal() {
         }
     })
 
+    // La idea de este efecto, es verificar si tenemos un channelType cuando abrimos el modal. En caso de tenerlo (le estaremos pasando el channelType actual), ya lo seteamos como valor por defecto. Esto es para utilizarlo en los botones puntuales de agregar canal en los botones de voice channels o video channels.
+
     useEffect(() => {
         if (channelType) {
             form.setValue("type", channelType)
@@ -51,7 +67,11 @@ export default function CreateChannelModal() {
         }
     }, [channelType, form])
 
+    // Verificamos si el formulario esta cargando con el formState.isSubmitting de useForm.
+
     const isLoading = form.formState.isSubmitting
+
+    // Creamos la funcion onSubmit para crear el canal.
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
@@ -73,10 +93,14 @@ export default function CreateChannelModal() {
         }
     }
 
+    // Creamos la funcion handleClose para cerrar el modal.
+
     const handleClose = () => {
         form.reset()
         onClose()
     }
+
+    // El modal tiene un content que encierra todo. Un header donde estara el titulo. Y despues el form que utilizamos la misma metologia de siempre con el useForm.
 
     return (
         <Dialog open={isModalOpen} onOpenChange={handleClose}>

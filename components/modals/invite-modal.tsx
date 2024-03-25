@@ -11,19 +11,40 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import useOrigin from "@/hooks/use-origin"
 
+// Este modal servira para generar el link de invite para un servidor.
+
 export default function InviteModal() {
 
+    // Utilizamos las funciones onOpen y onClose del useModal, y el estado isOpen, type y data.
+
     const { onOpen, isOpen, onClose, type, data } = useModal()
+
+    // Utilizamos el hook useOrigin para recuperar la url actual en la que estamos.
+
     const origin = useOrigin();
+
+    // Creamos dos estados, uno para controlar si copiamos o no el invite code, y el otro para verificar si esta cargando nuestro formulario.
 
     const [copied, setCopied] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
+    // isModalOpen va a ser true cuando el isOpen === true y el type sea "invite"
+
     const isModalOpen = isOpen && type === "invite"
+
+    // Recuperamos el server del objeto data
+    
     const { server } = data;
+
+    // Creamos el inviteUrl con el origin (url actual), invite y el invite code del servidor.   
+
     const inviteUrl = `${origin}/invite/${server?.inviteCode}`;
 
+    // Creamos una funcion onCopy para manejar el copiado de la url.
+
     const onCopy = () => {
+
+        // Esta linea copia el texto que le pasamos por parametro en el portapapeles. Navigator es un objeto global del navegador.
         navigator.clipboard.writeText(inviteUrl)
         setCopied(true);
 
@@ -31,6 +52,8 @@ export default function InviteModal() {
             setCopied(false)
         }, 1000)
     }
+
+    // Creamos una funcion onNew para generar un invite code nuevo. 
 
     const onNew = async () => {
         try {
@@ -45,6 +68,8 @@ export default function InviteModal() {
             setIsLoading(false)
         }
     }
+
+    // El modal tiene un content que encierra todo. Un header donde estara el titulo. Y despues el form que utilizamos la misma metologia de siempre con el useForm.
 
     return (
         <Dialog open={isModalOpen} onOpenChange={onClose}>
@@ -66,7 +91,7 @@ export default function InviteModal() {
                         />
                         <Button disabled={isLoading} size="icon" onClick={onCopy}>
                             {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                        </Button>
+                        </Button>   
                     </div>
                     <Button
                         onClick={onNew}

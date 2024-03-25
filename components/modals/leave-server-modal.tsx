@@ -8,16 +8,28 @@ import { useModal } from "@/hooks/use-modal-store"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 
+// Este modal es para salir de un servidor.
 
 export default function LeaveServerModal() {
+
+    // Consumimos el hook useModal. Utilizaremos las funciones isOpen y onClose, y el estado de type (tipo de modal) y data (objeto con la data).
 
     const { isOpen, onClose, type, data } = useModal()
     const router = useRouter()
 
+    // Seteamos un estado para controlar el envio de un evento.
+
     const [isLoading, setIsLoading] = useState(false);
 
+    // isModalOpen va a ser true cuando el isOpen === true y el type sea "leaveServer"
+
     const isModalOpen = isOpen && type === "leaveServer"
+
+    // Recuperamos el server del objeto data
+
     const { server } = data;
+
+    // Creamos la funcion onClick para salir del server
 
     const onClick = async () => {
         try {
@@ -34,6 +46,8 @@ export default function LeaveServerModal() {
             setIsLoading(false)
         }
     }
+
+    // El modal tiene un content que encierra todo. Un header donde estara el titulo y el description. Y despues el form que utilizamos la misma metologia de siempre con el useForm.
 
     return (
         <Dialog open={isModalOpen} onOpenChange={onClose}>

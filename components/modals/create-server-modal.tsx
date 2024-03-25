@@ -13,6 +13,10 @@ import FileUpload from "@/components/file-upload"
 import { useRouter } from "next/navigation"
 import { useModal } from "@/hooks/use-modal-store"
 
+// Este modal se usara para la creacion de un servidor.
+
+// Utilizamos zod para crear el schema de validacion. 
+
 const formSchema = z.object({
     name: z.string().min(1, {
         message: "Server name is required"
@@ -22,12 +26,20 @@ const formSchema = z.object({
     })
 })
 
+
+
 export default function CreateServerModal() {
+
+    // Usamos las funciones isOpen y onClose del usaModal, ademas del estado de type.
 
     const { isOpen, onClose, type } = useModal()
     const router = useRouter()
 
+    // Seteamos el isModalOpen si isOpen es true, y el type es "createServer"
+
     const isModalOpen = isOpen && type === "createServer"
+
+    // Creamos un formulario con el useForm de react-hook-form. El resolver es el que validara el formulario con el formSchema de zod.
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -37,11 +49,15 @@ export default function CreateServerModal() {
         }
     })
 
+    // Verificamos si el formulario esta cargando con el formState.isSubmitting de useForm.
+
     const isLoading = form.formState.isSubmitting
+
+    // Creamos la funcion onSubmit para crear el server.
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            await axios.post("http://localhost:3000/api/servers", values)
+            await axios.post("/api/servers", values)
 
             form.reset();
             router.refresh();
@@ -51,10 +67,14 @@ export default function CreateServerModal() {
         }
     }
 
+    // Creamos la funcion handleClose para cerrar el modal.
+
     const handleClose = () => {
         form.reset()
         onClose()
     }
+
+    // El modal tiene un content que encierra todo. Un header donde estara el titulo. Y despues el form que utilizamos la misma metologia de siempre con el useForm.
 
     return (
         <Dialog open={isModalOpen} onOpenChange={handleClose}>

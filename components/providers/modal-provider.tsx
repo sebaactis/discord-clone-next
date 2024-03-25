@@ -14,6 +14,8 @@ import EditChannelModal from "@/components/modals/edit-channel-modal";
 import MessageFileModal from "@/components/modals/message-file-modal";
 import DeleteMessageModal from "@/components/modals/delete-message-modal";
 
+// En este componente vamos a centralizar todos los modales, para que esten disponibles al momento que los llamemos.
+
 export const ModalProvider = () => {
 
     const [isMounted, setIsMounted] = useState(false);

@@ -13,6 +13,10 @@ import UserAvatar from "@/components/user-avatar"
 import { Check, Gavel, Loader2, MoreVertical, Shield, ShieldAlert, ShieldCheck, ShieldQuestion } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuTrigger, DropdownMenuSubTrigger } from "@/components/ui/dropdown-menu"
 
+// Este modal se utilizara para ver los miembros actuales del servidor.
+
+// Creamos un objeto roleIconMap, para asignar diferentes iconos segun el tipo de rol de cada usuario.
+
 const roleIconMap = {
     "GUEST": null,
     "MODERATOR": <ShieldCheck className="h-4 w-4 ml-2 text-indigo-500 " />,
@@ -23,11 +27,24 @@ const roleIconMap = {
 export default function MembersModal() {
 
     const router = useRouter()
+
+    // Consumimos el hook useModal. Utilizaremos las funciones isOpen y onClose, y el estado de type (tipo de modal), data (objeto con la data) y isOpen.
+
     const { onOpen, isOpen, onClose, type, data } = useModal()
+
+    // Seteamos un estado loadingId. Esto va a ser para utilizarlo para controlar las cargas de cada usuario puntual.
+
     const [loadingId, setLoadingId] = useState("")
 
+    // isModalOpen va a ser true cuando el isOpen === true y el type sea "members"
+
     const isModalOpen = isOpen && type === "members"
+
+    // Recuperamos el server del objeto data, y le decimos que server va a ser de tipo ServerWithMembersWithProfiles
+
     const { server } = data as { server: ServerWithMembersWithProfiles };
+
+    // Creamos una funcion onKick para poder kickear a un usuario del servidor.
 
     const onKick = async (memberId: string) => {
         try {
@@ -49,6 +66,8 @@ export default function MembersModal() {
             setLoadingId("")
         }
     }
+
+    // Creamos una funcion onRoleChange para cambiarle el rol a un usuario.
 
     const onRoleChange = async (memberId: string, role: MemberRole) => {
         try {
@@ -72,6 +91,10 @@ export default function MembersModal() {
         }
     }
 
+    // El modal tiene un content que encierra todo. Un header donde estara el titulo y el description. Y despues el form que utilizamos la misma metologia de siempre con el useForm.
+
+    // Tendremos un ScrollArea donde renderizaremos cada usuario que tengamos en server.members.
+    // Ademas le vamos a asignar un boton a cada uno (salvo que seamos el administrador), para poder cambiarle el rol o kickearlo del servidor.
 
     return (
         <Dialog open={isModalOpen} onOpenChange={onClose}>
@@ -81,7 +104,7 @@ export default function MembersModal() {
                         Manage Members
                     </DialogTitle>
                     <DialogDescription className="text-center text-zinc-500">
-                        {server?.members.length} Members
+                        {server?.members?.length} Members
                     </DialogDescription>
                 </DialogHeader>
                 <ScrollArea className="mt-8 max-h-[420px] pr-6">

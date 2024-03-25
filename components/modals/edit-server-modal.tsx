@@ -14,6 +14,10 @@ import { useRouter } from "next/navigation"
 import { useModal } from "@/hooks/use-modal-store"
 import { useEffect } from "react"
 
+// Este modal servira para editar un servidor.
+
+// Creamos con zod el schema para validar el formulario para editar el server.
+
 const formSchema = z.object({
     name: z.string().min(1, {
         message: "Server name is required"
@@ -25,11 +29,20 @@ const formSchema = z.object({
 
 export default function EditServerModal() {
 
+    // Consumimos el hook useModal. Utilizaremos las funciones isOpen y onClose, y el estado de type (tipo de modal) y data (objeto con la data).
+
     const { isOpen, onClose, type, data } = useModal()
     const router = useRouter()
 
+    // isModalOpen va a ser true cuando el isOpen === true y el type sea "editServer"
+
     const isModalOpen = isOpen && type === "editServer"
+
+    // Recuperamos el server del objeto data
+
     const { server } = data;
+
+    // Creamos un formulario con el useForm de react-hook-form. El resolver es el que validara el formulario con el formSchema de zod.
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -39,6 +52,8 @@ export default function EditServerModal() {
         }
     })
 
+    // Creamos un efecto, donde verificamos si existe el server. En caso de que exista, seteamos por defecto los valores del form con el nombre y el imageUrl del server actual.
+
     useEffect(() => {
         if (server) {
             form.setValue("name", server.name)
@@ -46,7 +61,11 @@ export default function EditServerModal() {
         }
     }, [server, form])
 
+    // Verificamos si el formulario esta cargando con el formState.isSubmitting de useForm.
+
     const isLoading = form.formState.isSubmitting
+
+    // Creamos la funcion onSubmit para editar el server.
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
@@ -60,9 +79,13 @@ export default function EditServerModal() {
         }
     }
 
+    // Creamos la funcion handleClose para cerrar el modal.
+
     const handleClose = () => {
         onClose()
     }
+
+    // El modal tiene un content que encierra todo. Un header donde estara el titulo y el description. Y despues el form que utilizamos la misma metologia de siempre con el useForm.
 
     return (
         <Dialog open={isModalOpen} onOpenChange={handleClose}>

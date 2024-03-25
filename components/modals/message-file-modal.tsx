@@ -13,19 +13,34 @@ import FileUpload from "@/components/file-upload"
 import { useRouter } from "next/navigation"
 import { useModal } from "@/hooks/use-modal-store"
 
+// Este modal es para subir un archivo a un conversacion o chat.
+
+// Creamos el schema con zod para validar el formulario.
+
 const formSchema = z.object({
     fileUrl: z.string().min(1, {
         message: "Attachment is required"
     })
 })
 
+
 export default function MessageFileModal() {
 
+    // Consumimos el hook useModal. Utilizaremos las funciones isOpen y onClose, y el estado de type (tipo de modal) y data (objeto con la data).
+
+
     const { isOpen, onClose, type, data } = useModal();
+
+    // Recuperamos la apiUrl y la query del objeto data.
+
     const { apiUrl, query } = data;
     const router = useRouter()
 
+    // isModalOpen va a ser true cuando el isOpen === true y el type sea "messageFile"
+
     const isModalOpen = isOpen && type === "messageFile"
+
+    // Creamos un formulario con el useForm de react-hook-form. El resolver es el que validara el formulario con el formSchema de zod. 
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -34,12 +49,18 @@ export default function MessageFileModal() {
         }
     })
 
+    // Creamos un handleClose para cerrar el modal.
+
     const handleClose = () => {
         form.reset();
         onClose();
     }
 
+    // Verificamos si el formulario esta cargando con el formState.isSubmitting de useForm.
+
     const isLoading = form.formState.isSubmitting
+
+    // Creamos una funcion onSubmit para cargar el archivo.
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
@@ -61,6 +82,8 @@ export default function MessageFileModal() {
             console.log(error)
         }
     }
+
+    // El modal tiene un content que encierra todo. Un header donde estara el titulo y el description. Y despues el form que utilizamos la misma metologia de siempre con el useForm.
 
     return (
         <Dialog open={isModalOpen} onOpenChange={handleClose}>

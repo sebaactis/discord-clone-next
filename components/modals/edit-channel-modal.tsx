@@ -16,6 +16,11 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useEffect } from "react"
 
+// Este modal es para editar un canal.
+
+// Creamos con zod el schema para validar el formulario para editar el canal.
+// Es muy similar al de create channel
+
 const formSchema = z.object({
     name: z.string().min(1, {
         message: "Channel name is required"
@@ -28,11 +33,21 @@ const formSchema = z.object({
 
 export default function EditChannelModal() {
 
+    // Consumimos el hook useModal. Utilizaremos las funciones isOpen y onClose, y el estado de type (tipo de modal) y data (objeto con la data).
+
     const { isOpen, onClose, type, data } = useModal()
     const router = useRouter()
 
+    // isModalOpen va a ser true cuando el isOpen === true y el type sea "editChannel"
+
     const isModalOpen = isOpen && type === "editChannel"
+
+    // Recuperamos el channel y el server del objeto data
+
     const { channel, server } = data;
+
+    // Creamos un formulario con el useForm de react-hook-form. El resolver es el que validara el formulario con el formSchema de zod.
+    // Resaltamos que como valor por defecto, vamos a usar el channelType que recuperamos de data, o en su defecto, pondremos ChannelType.TEXT
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -42,6 +57,8 @@ export default function EditChannelModal() {
         }
     })
 
+    // Creamos un efecto, donde verificamos si existe el channel. En caso de que exista, seteamos por defecto los valores del form con el nombre y el type del canal actual.
+
     useEffect(() => {
         if (channel) {
             form.setValue("name", channel.name)
@@ -49,7 +66,11 @@ export default function EditChannelModal() {
         }
     }, [form, channel])
 
+    // Verificamos si el formulario esta cargando con el formState.isSubmitting de useForm.
+
     const isLoading = form.formState.isSubmitting
+
+    // Creamos la funcion onSubmit para editar el canal.
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
@@ -71,10 +92,14 @@ export default function EditChannelModal() {
         }
     }
 
+    // Creamos la funcion handleClose para cerrar el modal.
+
     const handleClose = () => {
         form.reset()
         onClose()
     }
+
+    // El modal tiene un content que encierra todo. Un header donde estara el titulo. Y despues el form que utilizamos la misma metologia de siempre con el useForm.
 
     return (
         <Dialog open={isModalOpen} onOpenChange={handleClose}>

@@ -8,16 +8,28 @@ import { useModal } from "@/hooks/use-modal-store"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 
+// Este modal se utilizara para eliminar un server.
 
 export default function DeleteServerModal() {
+
+    // Utilizaremos las funciones isOpen y onClose del useModal, y los estados type y data.
 
     const { isOpen, onClose, type, data } = useModal()
     const router = useRouter()
 
+    // Seteamos un estado para controlar si esta cargando o no al eliminar el canal.
+
     const [isLoading, setIsLoading] = useState(false);
 
+    // El isModalOpen sera true cuando isOpen sea true, y el type sea "deleteServer"
+
     const isModalOpen = isOpen && type === "deleteServer"
+
+    // Recuperamos el server del objeto data.
+
     const { server } = data;
+
+    // Creamos una funcion onClick para eliminar el server.
 
     const onClick = async () => {
         try {
@@ -34,6 +46,8 @@ export default function DeleteServerModal() {
             setIsLoading(false)
         }
     }
+
+    // El modal tiene un content que encierra todo. Un header donde estara el titulo y la descripcion. Y despues el form que utilizamos la misma metologia de siempre con el useForm.
 
     return (
         <Dialog open={isModalOpen} onOpenChange={onClose}>
