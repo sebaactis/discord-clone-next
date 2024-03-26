@@ -4,9 +4,16 @@ import { Plus } from "lucide-react"
 import ActionToolTip from "@/components/action-tooltip"
 import { useModal } from "@/hooks/use-modal-store";
 
+// Componente para agregar un servidor
+
 export default function NavigationAction() {
 
+    // Recuperamos la funcion onOpen de useModal para abrir el modal que necesitamos
+
     const { onOpen } = useModal();
+
+    // Renderizamos un ToolTip que va a decir "add a server" cuando le hagamos :hover.
+    // El boton va a disparar el onOpen para abrir el modal con el tipo "createServer"
 
     return (
         <div>

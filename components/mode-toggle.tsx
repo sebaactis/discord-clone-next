@@ -12,8 +12,15 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+// Renderizamos el boton que va a permitirnos cambiar el tema de la web.
+
 export function ModeToggle() {
+
+    // Recuperamos la funcion setTheme del hook useTheme para setear el tema. Este hook viene de next-themes, no lo creamos nosotros.
+
     const { setTheme } = useTheme()
+
+    // Renderizamos un DropdownMenu que tendra tres opciones: el tema claro, el tema obscuro, y el tema determinado por sistema.
 
     return (
         <DropdownMenu>

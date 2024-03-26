@@ -5,11 +5,15 @@ import { useParams, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import ActionToolTip from "@/components/action-tooltip"
 
+// Renderizamos cada item del navigation que tengamos dentro de los servers.
+
 interface NavigationItemsProps {
     id: string
     imageUrl: string
     name: string
 }
+
+// Vamos a recibir por props el id del server, el imageUrl del server, y el name del server
 
 export default function NavigationItem({
     id,
@@ -17,12 +21,20 @@ export default function NavigationItem({
     name
 }: NavigationItemsProps) {
 
+    // Utilizaremos useParams para manejar los params de la url y router para manejar el ruteo de la aplicacion.
+
     const params = useParams();
     const router = useRouter();
+
+    // Creamos una funcion onClick para ir hacia el servidor que demos click en la barra de navegacion.
 
     const onClick = () => {
         router.push(`/servers/${id}`)
     }
+
+    // Vamos a renderizar un toolTip que tendra el nombre del servidor al hacer :hover
+    // El boton va a corresponder a cada server en la lista. Tendra unos estilos para marcar sobre cual estamos en el momento.
+
 
     return (
         <ActionToolTip

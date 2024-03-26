@@ -1,5 +1,8 @@
 import NavigationSideBar from "@/components/navigation/navigation-sidebar"
 
+// Layout comun a todas las rutas.
+// Tendremos cada pagina en particular en el {children} y el NavigationSideBar
+
 export default async function MainLayout({ children }: {
     children: React.ReactNode
 }) {
