@@ -18,6 +18,9 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useModal } from "@/hooks/use-modal-store"
 
+// Este componente renderiza el mensaje en particular de un chat
+
+// Va a recibir por props: el id del mensaje, el contenido del mensaje, el miembro de ese mensaje, el timestamp (horario y fecha), el fileUrl por si es un archivo, el deleted para ver si esta borrado, el currentMember logueado, el isUpdated para ver si fue editado, el socketUrl y el socketQuery.
 interface ChatItemProps {
     id: string
     content: string
@@ -33,11 +36,15 @@ interface ChatItemProps {
     socketQuery: Record<string, string>
 }
 
+// Creamos un objeto roleIconMap para usar un icono segun el tipo de usuario.
+
 const roleIconMap = {
     "GUEST": null,
     "MODERATOR": <ShieldCheck className="w-4 h-4 ml-4 text-indigo-500" />,
     "ADMIN": <ShieldAlert className="w-4 h-4 ml-4 text-rose-500" />
 }
+
+// Creamos un schema de zod para validar el mensaje cuando vayamos a editarlo.
 
 const formSchema = z.object({
     content: z.string().min(1)
@@ -47,15 +54,23 @@ export const ChatItem = ({ id, content, member, timestamp, fileUrl, deleted, cur
 
     const params = useParams();
     const router = useRouter();
+
+    // Creamos un estado para ver si estamos editando un mensaje
+    // Usamos la funcion onOpen del useModal()
+
     const [isEditing, setIsEditing] = useState(false)
     const { onOpen } = useModal();
-    
+
+    // Creamos una funcion para dar click al miembro con el que estamos hablando para ir a una conversacion privada, salvo que el miembro del mensaje sea el mismo del miembro actual logueado.
+
     const onMemberClick = () => {
         if (member.id === currentMember.id) return;
 
         router.push(`/servers/${params?.serverId}/conversations/${member.id}`)
 
     }
+
+    // Creamos un efecto para poder salir de la edicion del mensaje con el boton de escape.
 
     useEffect(() => {
         const handleKeyDown = (event: any) => {
@@ -69,6 +84,8 @@ export const ChatItem = ({ id, content, member, timestamp, fileUrl, deleted, cur
         return () => window.removeEventListener("keydown", handleKeyDown)
     }, [])
 
+    // Creamos un formulario con useForm para manejar la edicion del mensaje.
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -76,7 +93,11 @@ export const ChatItem = ({ id, content, member, timestamp, fileUrl, deleted, cur
         }
     })
 
+    // Creamos un loading para ver cuando se esta subiendo el formulario.
+
     const isLoading = form.formState.isSubmitting
+
+    // Creamos una funcion onSubmit para enviar la edicion del mensaje a la base de datos.
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
@@ -96,22 +117,47 @@ export const ChatItem = ({ id, content, member, timestamp, fileUrl, deleted, cur
         }
     }
 
+
+
     useEffect(() => {
         form.reset({
             content: content
         })
     }, [content, form])
 
+    // Creamos diferente variables para tener validaciones:
+
+    // Verificamos segun la extension del archivo que tipo de file es.
     const fileType = fileUrl?.split(".").pop();
+
+    // Verificamos a partir de los roles si es admin o moderador.
     const isAdmin = currentMember.role === MemberRole.ADMIN
     const isModerator = currentMember.role === MemberRole.MODERATOR
+
+    // Verificamos si es el owner del mensaje
     const isOwner = currentMember.id === member.id
+
+    // Verificamos si puede borrar o editar el mensaje segun si el mensaje no esta borrado, y si es admin, moderador o owner (solo para editar el owner)
     const canDeleteMessage = !deleted && (isAdmin || isModerator || isOwner)
     const canEditMessage = !deleted && isOwner && !fileUrl
+
+    // Verificamos segun el resultado del fileType con la extension si es PDF o IMG
     const isPDF = fileType === "pdf" && fileUrl
     const isImage = !isPDF && fileUrl
 
+    // Renderizamos el userAvatar, el nombre del que puso el mensaje, el icono segun el role y el horario del mensaje
 
+    // Si es imagen, renderizamos la imagen con la url para ir hacia la misma.
+    // Si es pdf, renderizamos un icono pdf con la url para ir hacia el archivo.
+
+    // Si no es un archivo, y no esta siendo editado, renderizamos el mensaje (content)
+
+    // Si esta siendo actualizado y no fue borrado, le agregamos un (edited)
+
+    // Si no es un fileUrl, y esta siendo editado, abrimos el formulario de edicion.
+
+    // Si podemos borrar el mensaje, le agregamos un tooltip con el boton para borrar
+    // Si podemos editar el mensaje, le agregamos un tooltip con el boton para editar
 
     return (
         <div className="relative group flex items-center hover:bg-black/5 p-4 transition w-full">

@@ -13,12 +13,18 @@ import { useModal } from "@/hooks/use-modal-store"
 import { EmojiPicker } from "@/components/emoji-picker"
 import { useRouter } from "next/navigation"
 
+// Este componente renderiza el input para poder enviar mensajes en un chat
+
+// Recibe por props la apiUrl, la query para la url de la api, el nombre, y el tipo de chat.
 interface ChatInputProps {
     apiUrl: string
     query: Record<string, any>
     name: string
     type: "conversation" | "channel"
 }
+
+// Utilizamos un schema de zod para validar el input
+
 
 const formSchema = z.object({
     content: z.string().min(1)
@@ -31,8 +37,12 @@ export const ChatInput = ({
     type
 }: ChatInputProps) => {
 
+    // Usamos la funcion onOpen de useModal();
+
     const { onOpen } = useModal();
     const router = useRouter();
+
+    // Creamos un formulario con useForm.
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -41,7 +51,11 @@ export const ChatInput = ({
         }
     })
 
+    // Creamos isLoading para ver cuando el formulario se esta subiendo.
+
     const isLoading = form.formState.isSubmitting;
+
+    // Creamos la funcion onSubmit para crear el mensaje en la base de datos.
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
@@ -58,6 +72,8 @@ export const ChatInput = ({
             console.log(error)
         }
     }
+
+    // Creamos el formulario con el metodo de useForm para crear un input donde escribiremos el mensaje. Le sumamos el emojipicker para agregarle el emoji.
 
     return (
         <Form {...form}>

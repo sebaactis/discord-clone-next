@@ -4,6 +4,8 @@ import UserAvatar from "@/components/user-avatar";
 import { SocketIndicator } from "@/components/socket-indicator";
 import { ChatVideoButton } from "./chat-video-button";
 
+// Renderizamos el header del chat
+
 interface ChatHeaderProps {
     serverId: string
     name: string
@@ -11,12 +13,20 @@ interface ChatHeaderProps {
     imageUrl?: string
 }
 
+// Vamos a recibir por props el serverId, el nombre, el tipo y la url de imagen del servidor.
+
 export default function ChatHeader({
     serverId,
     name,
     type,
     imageUrl
 }: ChatHeaderProps) {
+
+    // Vamos a retornar el mobile toogle para la version mobile. Si el tipo de chat es de channel, renderizamos un hash, si es conversation renderizamos el avatar de usuario al que le vamos a hablar
+
+    // Renderizamos el nombre del channel o del usuario
+    // Y renderizamos un video button en caso de que sea una conversacion y el socket indicator.
+
     return (
         <div className="text-md font-semibold px-3 flex items-center h-12 border-neutral-200 dark:border-neutral-800 border-b-2">
             <MobileToogle serverId={serverId} />

@@ -1,14 +1,23 @@
 import { Hash } from "lucide-react"
 
+// Componente para renderizar el mensaje de bienvenida de un chat.
+
 interface ChatWelcomeProps {
     name: string
     type: "channel" | "conversation"
 }
 
+// Recibe por pros el nombre del canal y el tipo
+
 export const ChatWelcome = ({
     name,
     type
 }: ChatWelcomeProps) => {
+
+
+    // Retorna un Hash si es un canal
+    // Retorna un mensaje segun si es channel o conversation
+
     return (
         <div className="space-y-2 px-4 mb-4">
             {type === "channel" && (
