@@ -1,5 +1,7 @@
 import { authMiddleware } from "@clerk/nextjs";
 
+// Este middleware sirve para setear rutas privadas o publicas para el auth de clerk.
+
 export default authMiddleware({
     publicRoutes: ["/api/uploadthing"]
 });
