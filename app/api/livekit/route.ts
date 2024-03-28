@@ -1,6 +1,9 @@
 import { AccessToken } from "livekit-server-sdk";
 import { NextRequest, NextResponse } from "next/server";
 
+
+// Esta URL de API, sirve para crear un room para los chats de video o audio. Lo seteamos desde livekit directamente segun la documentacion
+// En general, lo que hace es devolver un token para esta conversacion a partir de los parametros room y username que vienen en la url.
 export async function GET(req: NextRequest) {
 
     const room = req.nextUrl.searchParams.get("room");
